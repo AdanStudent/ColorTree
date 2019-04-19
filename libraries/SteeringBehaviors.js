@@ -32,27 +32,32 @@ class SteeringBehaviors
 
   Wander()
   {
-    let wanderR = 50;
-    let wanderDist = 80;
+    let wanderR = 50.0;
+    let wanderDist = 80.0;
     let change = 0.3;
 
     this.wanderTheta = this.wanderTheta + random(-change, change);
 
     let heading = this.Agent.Direction;
-    this.Agent.Heading = heading.normalize();
+    this.Agent.Heading = heading.normalize().copy();
 
     let circlePos = this.Agent.Heading.copy();
 
     circlePos.mult(wanderDist);
-    circlePos.add(this.Agent.position.copy());
+    circlePos.add(this.Agent.position);
     let z = new p5.Vector(0,0);
-    let h = z.angleBetween(this.Agent.Heading);
+    let h = 0;
 
-    let circleOffset = createVector(wanderR * cos(this.wanderTheta + h),
-                                    wanderR * sin(this.wanderTheta + h));
+    //console.log(z.angleBetween(this.Agent.Heading))
+    let x = wanderR * cos(this.wanderTheta + h);
+    let y = wanderR * sin(this.wanderTheta + h);
+    // console.log(x)
+
+    let circleOffset = createVector(x, y);
     let target = circlePos.add(circleOffset);
 
     // console.log(target);
+    // noLoop();
     return this.Seek(target.copy());
   }
 
