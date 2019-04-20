@@ -8,7 +8,8 @@ class SteeringBehaviors
     this.Acceleration;
     this.wanderTheta = 0.0;
 
-    this.Behavior = 1000;
+    this.Behavior = 100;
+    this.change = random(0, 0.4);
   }
 
   Seek(target)
@@ -34,9 +35,8 @@ class SteeringBehaviors
   {
     let wanderR = 50.0;
     let wanderDist = 80.0;
-    let change = 0.3;
 
-    this.wanderTheta = this.wanderTheta + random(-change, change);
+    this.wanderTheta = this.wanderTheta + random(-this.change, this.change);
 
     let heading = this.Agent.Direction;
     this.Agent.Heading = heading.normalize().copy();
@@ -74,12 +74,12 @@ class SteeringBehaviors
       return this.SteeringForce = this.Seek(this.target.copy());
     }
     //Fleeing Behavior
-    else if (this.Behavior === 100)
+    else if (this.Behavior === 11)
     {
       return this.SteeringForce = this.Flee(this.target.copy());
     }
     //wandering behavior
-    else if (this.Behavior === 1000)
+    else if (this.Behavior === 100)
     {
       return this.SteeringForce = this.Wander();
     }
@@ -96,7 +96,7 @@ class SteeringBehaviors
 
     this.Agent.Direction.limit(this.Agent.MaxSpeed);
     //moves the agent
-    this.Acceleration.mult(dT * 0.1);
+    this.Acceleration.mult(dT * 0.01);
     this.Agent.Direction.add(this.Acceleration);
     this.Agent.position.add(this.Agent.Direction);
 

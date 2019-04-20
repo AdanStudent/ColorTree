@@ -14,6 +14,8 @@ class MovingAgent extends Agent
         this.Heading = new p5.Vector();
 
         this.Steering = new SteeringBehaviors(this, target.copy());
+
+        this.collided = [];
     }
 
     run(dT)
@@ -21,6 +23,11 @@ class MovingAgent extends Agent
       super.show();
       this.Steering.updateForces(dT);
       this.worldWrap();
+    }
+
+    clearCollided()
+    {
+      this.collided.length = 0;
     }
 
     worldWrap()
@@ -46,7 +53,27 @@ class MovingAgent extends Agent
 
     checkCollision(other)
     {
-        //if(this.mass)
+      let d = dist(this.location.x, this.location.y, other.location.x, other.location.y);
+      if (d < this.Mass + other.Mass && !this.collided.includes(other))
+      {
+        this.collided.push(other);
+        other.collided.push(this);
+
+        console.log(this.Red);
+        this.Red = this.colorAvg(other);
+        console.log(other.Red);
+
+        return true;
+      }
+      return false;
+    }
+
+    colorAvg(other)
+    {
+      // console.log(this.Red);
+      // console.log(other.Red);
+
+      return other.Red;
     }
 
     updateTarget(target){
