@@ -1,19 +1,19 @@
 class MovingAgent extends Agent
 {
-    constructor(loc, m, c, target)
+    constructor(loc, m, c, target, other)
     {
         super(loc, m, c);
 
         //MaxSpeed
-        this.MaxSpeed = 10;
+        this.MaxSpeed = 10 * this.Mass;
         //MaxForce
-        this.MaxForce = 2;
+        this.MaxForce = this.Mass/4;
         //Direction
-        this.Direction = new p5.Vector();
+        this.Direction =  p5.Vector.random2D();
         //Heading
         this.Heading = new p5.Vector();
 
-        this.Steering = new SteeringBehaviors(this, target.copy());
+        this.Steering = new SteeringBehaviors(this, target.copy(), other);
 
         this.collided = [];
     }

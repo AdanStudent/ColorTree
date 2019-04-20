@@ -1,15 +1,16 @@
 class SteeringBehaviors
 {
-  constructor(agent, target)
+  constructor(agent, target, other)
   {
     this.Agent = agent;
+    this.OtherAgent = other;
     this.target = target.copy();
     this.SteeringForce = new p5.Vector();
     this.Acceleration;
     this.wanderTheta = 0.0;
-
-    this.Behavior = 100;
-    this.change = random(0, 0.4);
+    // this.Behavior = int(random(1, 4));
+    this.Behavior = 3;
+    this.change = random(0.2, 0.4);
   }
 
   Seek(target)
@@ -24,11 +25,12 @@ class SteeringBehaviors
 
   Flee(target)
   {
-    let desiredVelocity = (this.Agent.position - target) * this.Agent.MaxSpeed;
+    let desire = this.Agent.position.add(target);
+    let desiredVelocity = desire.mult(this.Agent.MaxSpeed);
 
     desiredVelocity.normalize();
 
-    return desiredVelocity - this.Agent.Direction;
+    return desiredVelocity.add(this.Agent.Direction);
   }
 
   Wander()
@@ -64,22 +66,22 @@ class SteeringBehaviors
   updateBehaviors()
   {
     //no Behavior running
-    if (this.Behavior === 1)
+    if (this.Behavior === 0)
     {
-      return this.SteeringForce = new p5.Vector();
+      return this.SteeringForce = createVector(0, 0);
     }
     //Seeking Behavior
-    else if (this.Behavior === 10)
+    else if (this.Behavior === 1)
     {
       return this.SteeringForce = this.Seek(this.target.copy());
     }
     //Fleeing Behavior
-    else if (this.Behavior === 11)
+    else if (this.Behavior === 2)
     {
       return this.SteeringForce = this.Flee(this.target.copy());
     }
     //wandering behavior
-    else if (this.Behavior === 100)
+    else if (this.Behavior === 3)
     {
       return this.SteeringForce = this.Wander();
     }
@@ -121,6 +123,7 @@ class SteeringBehaviors
 
   sumForces(forceToAdd)
   {
+
     let magSoFar = this.SteeringForce.mag();
 
     let magRemaining = this.Agent.MaxForce - magSoFar;

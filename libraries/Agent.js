@@ -8,8 +8,6 @@ class Agent
       this.Mass = m;
       //Color
       this.Red = red(c);
-      console.log(this.Red);
-      
       this.Green = green(c);
       this.Blue = blue(c);
 
