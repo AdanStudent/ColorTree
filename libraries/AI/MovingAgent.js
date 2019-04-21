@@ -9,7 +9,7 @@ class MovingAgent extends Agent
         this.body.density = this.Mass;
 
         //MaxForce
-        this.MaxForce = this.Mass/4;
+        this.MaxForce = this.Mass;
 
         //Direction
         this.Direction =  Matter.Vector.create(0,0);
@@ -17,7 +17,7 @@ class MovingAgent extends Agent
         //Heading
         this.Heading = new p5.Vector();
 
-        this.Steering = new SteeringBehaviors(this, target.copy(), other);
+        this.Steering = new SteeringBehaviors(this, target, other);
 
         this.collided = [];
     }
