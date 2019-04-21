@@ -1,5 +1,12 @@
 let agents = [];
 
+let Engine = Matter.Engine,
+		World = Matter.World,
+		Bodies = Matter.Bodies;
+
+var engine = Engine.create();
+var world = engine.world;
+
 function setup()
 {
 	createCanvas(windowWidth, windowHeight);
@@ -28,30 +35,12 @@ function draw()
 {
 	prevM = millisecond;
 	millisecond = millis();
-
-	if (frameCount % 3600 === 0)
-	{
-			background(0);
-	}
-
 	let deltaTime = millisecond - prevM;
-	// console.log(deltaTime);
+
+	Engine.update(engine);
+
 	for (a of agents)
 	{
-		//a.clearCollided();
-		//a.highlight = false;
 		a.run(deltaTime);
 	}
-
-	// for (a of agents)
-	// {
-	// 	for (other of agents)
-	// 	{
-	// 		if(a !== other && a.checkCollision(other))
-	// 		{
-	// 			a.highlight = true;
-	// 		}
-	// 	}
-	//}
-	//console.log(agent);
 }

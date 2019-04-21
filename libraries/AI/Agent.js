@@ -11,7 +11,10 @@ class Agent
       this.Green = green(c);
       this.Blue = blue(c);
 
-      this.highlight = false;
+      // this.highlight = false;
+
+      this.body = Bodies.circle(this.location.x, this.location.y, this.Mass * 2);
+      World.add(world, this.body);
     }
 
     show()
@@ -24,9 +27,10 @@ class Agent
       {
         fill(255);
       }
+      let pos = this.body.position;
       noStroke();
       ellipseMode(CENTER);
-      ellipse(this.location.x, this.location.y, this.Mass * 2);
+      ellipse(pos.x, pos.y, this.Mass * 2);
     }
 
 }

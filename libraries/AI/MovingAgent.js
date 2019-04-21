@@ -6,10 +6,14 @@ class MovingAgent extends Agent
 
         //MaxSpeed
         this.MaxSpeed = 10 * this.Mass;
+        this.body.density = this.Mass;
+
         //MaxForce
         this.MaxForce = this.Mass/4;
+
         //Direction
-        this.Direction =  p5.Vector.random2D();
+        this.Direction =  Matter.Vector.create(0,0);
+
         //Heading
         this.Heading = new p5.Vector();
 
@@ -22,7 +26,7 @@ class MovingAgent extends Agent
     {
       super.show();
       this.Steering.updateForces(dT);
-      this.worldWrap();
+      // this.worldWrap();
     }
 
     clearCollided()
@@ -87,12 +91,12 @@ class MovingAgent extends Agent
 
     get position()
     {
-      return this.location;
+      return this.body.position;
     }
 
     set position(value)
     {
-      this.location = value;
+      this.body.position = value;
     }
 
     addAgentReference(other)

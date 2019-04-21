@@ -15,12 +15,12 @@ class SteeringBehaviors
 
   Seek(target)
   {
-    let desire = target.sub(this.Agent.position);
-    let desiredVelocity = desire.mult(this.Agent.MaxSpeed);
+    let desire = Matter.Vector.sub(target, this.Agent.position);
+    let desiredVelocity = Matter.Vector.mult(desire, this.Agent.MaxSpeed);
 
-    desiredVelocity.normalize();
+    Matter.Vector.normalise(desiredVelocity);
 
-    return desiredVelocity.sub(this.Agent.Direction);
+    return Matter.Vector.sub(desiredVelocity, this.Agent.Direction);
   }
 
   Flee(target)
@@ -41,12 +41,12 @@ class SteeringBehaviors
     this.wanderTheta = this.wanderTheta + random(-this.change, this.change);
 
     let heading = this.Agent.Direction;
-    this.Agent.Heading = heading.normalize().copy();
+    this.Agent.Heading = Matter.Vector.normalise(heading);
 
-    let circlePos = this.Agent.Heading.copy();
+    let circlePos = this.Agent.Heading;
 
-    circlePos.mult(wanderDist);
-    circlePos.add(this.Agent.position);
+    Matter.Vector.mult(circlePos, wanderDist);
+    circlePos = Matter.Vector.add(circlePos, this.Agent.position);
     let z = new p5.Vector(0,0);
     let h = 0;
 
@@ -56,11 +56,11 @@ class SteeringBehaviors
     // console.log(x)
 
     let circleOffset = createVector(x, y);
-    let target = circlePos.add(circleOffset);
+    let target = Matter.Vector.add(circlePos, circleOffset);
 
     // console.log(target);
     // noLoop();
-    return this.Seek(target.copy());
+    return this.Seek(target);
   }
 
   updateBehaviors()
@@ -94,13 +94,13 @@ class SteeringBehaviors
     this.applyForce(a);
 
     //gets the Acceleration of the agent and scales it to the Agent's Mass
-    this.Acceleration = this.SteeringForce.div(this.Agent.Mass);
+    this.Acceleration = Matter.Vector.div(this.SteeringForce, this.Agent.Mass);
 
     this.Agent.Direction.limit(this.Agent.MaxSpeed);
     //moves the agent
     this.Acceleration.mult(dT * 0.01);
     this.Agent.Direction.add(this.Acceleration);
-    this.Agent.position.add(this.Agent.Direction);
+    Matter.Vector.add(this.Agent.position, this.Agent.Direction);
 
     //checks if the magnitude of the Agent's Direction is greater than small number
     if (this.Agent.Direction.mag() > 0.00001)
@@ -117,14 +117,14 @@ class SteeringBehaviors
   {
     if (!this.sumForces(force))
     {
-      this.SteeringForce.add(force);
+      Matter.Vector.add(this.SteeringForce, force);
     }
   }
 
   sumForces(forceToAdd)
   {
 
-    let magSoFar = this.SteeringForce.mag();
+    let magSoFar = Matter.Vector.magnitude(this.SteeringForce);
 
     let magRemaining = this.Agent.MaxForce - magSoFar;
 
