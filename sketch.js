@@ -3,7 +3,7 @@ let agents = [];
 function setup()
 {
 	createCanvas(windowWidth, windowHeight);
-	for (var i = 0; i < 1000; i++) {
+	for (var i = 0; i < 10; i++) {
 		if (i < 1000 - 4)
 		{
 			agents.push(new MovingAgent(createVector(random(width), random(height)),
