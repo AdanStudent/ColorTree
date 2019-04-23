@@ -5,11 +5,11 @@ class MovingAgent extends Agent
         super(loc, m, c);
 
         //MaxSpeed
-        this.MaxSpeed = 10 * this.Mass;
-        this.body.density = this.Mass;
+        this.MaxSpeed = 20 * this.Mass;
+        this.body.density = this.Mass/2;
 
         //MaxForce
-        this.MaxForce = this.Mass;
+        this.MaxForce = 26;
 
         //Direction
         this.Direction =  Matter.Vector.create(0,0);
@@ -24,9 +24,9 @@ class MovingAgent extends Agent
 
     run(dT)
     {
+      this.worldWrap();
       super.show();
       this.Steering.updateForces(dT);
-      // this.worldWrap();
     }
 
     clearCollided()
@@ -36,22 +36,22 @@ class MovingAgent extends Agent
 
     worldWrap()
     {
-      if (this.location.x < 0)
+      if (this.position.x < 0)
       {
-          this.location.x = width;
+          this.position.x = width;
       }
-      else if (this.location.x > width)
+      else if (this.position.x > width)
       {
-          this.location.x = 0;
+          this.position.x = 0;
       }
 
-      if (this.location.y < 0)
+      if (this.position.y < 0)
       {
-          this.location.y = height;
+          this.position.y = height;
       }
-      else if (this.location.y > height)
+      else if (this.position.y > height)
       {
-          this.location.y = 0;
+          this.position.y = 0;
       }
     }
 
