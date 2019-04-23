@@ -10,6 +10,8 @@ class SteeringBehaviors
     this.wanderTheta = 0.0;
     this.Behavior = 3;
     this.change = random(0.30, 0.4);
+
+    this.otherAgents = [];
   }
 
   Seek(target)
@@ -58,6 +60,52 @@ class SteeringBehaviors
     return this.Seek(target);
   }
 
+  Separation()
+  {
+    let desiredSeparation = .75 * 2;
+    let sum =  Matter.Vector.create(0,0);
+    let count = 0;
+
+    for (let g of this.otherAgents)
+    {
+      let dist = this.dist(this.Agent.position, g.position);
+
+      if ((dist > 0) && (dist < desiredSeparation))
+      {
+        let diff = Matter.Vector.sub(this.Agent.position, g.position);
+        diff = Matter.Vector.normalise(diff);
+        diff = Matter.Vector.div(diff, dist);
+        sum = Matter.Vector.add(sum, diff);
+        count++;
+      }
+    }
+
+    let force = Matter.Vector.create(0,0);
+    if (count > 0)
+    {
+      sum = Matter.Vector.div(sum, count);
+      sum = Matter.Vector.normalise(sum);
+      sum = Matter.Vector.mult(sum, this.Agent.MaxSpeed);
+      force = Matter.Vector.sub(sum, this.Agent.Direction);
+    }
+
+    return force;
+  }
+
+  dist(vecA, vecB)
+  {
+    let distX = Math.pow(vecB - vecA, 2);
+    let distY = Math.pow(vecB - vecA, 2);
+
+    return Math.sqrt(distX + distY);
+
+  }
+
+  addOtherAgents(others)
+  {
+    this.otherAgents = others;
+  }
+
   updateBehaviors()
   {
     //no Behavior running
@@ -78,7 +126,7 @@ class SteeringBehaviors
     //wandering behavior
     else if (this.Behavior === 3)
     {
-      return this.SteeringForce = this.Wander();
+      return this.SteeringForce = Matter.Vector.add(this.Wander(), this.Separation());
     }
   }
 
