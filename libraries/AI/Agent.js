@@ -30,7 +30,7 @@ class Agent
       let pos = this.body.position;
       noStroke();
       ellipseMode(CENTER);
-      ellipse(pos.x, pos.y, this.Mass * 2);
+      ellipse(pos.x, pos.y, this.Mass);
     }
 
 }

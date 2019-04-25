@@ -24,9 +24,19 @@ class MovingAgent extends Agent
 
     run(dT)
     {
+      // console.log(this.position);
       this.worldWrap();
-      super.show();
+      // console.log(this.position);
       this.Steering.updateForces(dT);
+      super.show();
+
+      push();
+      stroke(255);
+      let h = Matter.Vector.mult(Matter.Vector.add(this.Heading, this.position), 1);
+      // console.log(h)
+      // line(this.position.x, this.position.y, h.x, h.y);
+      pop();
+
     }
 
     clearCollided()

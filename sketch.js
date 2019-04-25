@@ -1,6 +1,6 @@
 let agents = [];
 
-let Engine = Matter.Engine,
+var Engine = Matter.Engine,
 		World = Matter.World,
 		Bodies = Matter.Bodies;
 
@@ -10,12 +10,16 @@ let numOfAgents = 200;
 function setup()
 {
 	createCanvas(windowWidth, windowHeight);
+
 	for (var i = 0; i < numOfAgents; i++)
 	{
 		//if (i < numOfAgents - 4)
+		let pos = Matter.Vector.create(random(width), random(height));
+		let c = color(random(255), random(0), random(255));
+		let size = 10;
 		{
-			agents.push(new MovingAgent(createVector(random(width/4, width/2 + width/4), random(height/4, height/2 + height/4)),
-			5, color(random(255), random(0), random(255)), Matter.Vector.create(random() * width, random() * height),
+			agents.push(new MovingAgent(pos, size, c,
+				Matter.Vector.create(random() * width, random() * height),
 			agents[i-1]));
 		}
 		//else
@@ -30,22 +34,25 @@ function setup()
 		a.Steering.addOtherAgents(agents);
 	}
 
-	background(0);
 	world.gravity.y = 0;
+
+	Engine.run(engine);
+	// Engine.update(engine);
 }
 
 function mouseReleased()
 {
+	console.log(mouseX, mouseY);
 	for (a of agents)
 	{
-		a.Steering.updateTargetPos(Matter.Vector.create(mouseX, mouseY));
+		//a.Steering.updateTargetPos(Matter.Vector.create(mouseX, mouseY));
 	}
 }
 
 function draw()
 {
+	background(0);
 
-	Engine.update(engine);
 	// if (frameCount % 2 == 0)
 	{
 		for (var i = 0; i < numOfAgents; i++)
