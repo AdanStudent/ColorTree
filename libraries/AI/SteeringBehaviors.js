@@ -4,34 +4,47 @@ class SteeringBehaviors
   {
     this.Agent = agent;
     this.OtherAgent = other;
-    this.target = target.copy();
+    this.target = target;
     this.SteeringForce = new p5.Vector();
     this.Acceleration;
     this.wanderTheta = 0.0;
+    // this.Behavior = int(random(1, 4));
     this.Behavior = 3;
-    this.change = random(0.30, 0.4);
+    this.change = random(0.30, 0.45);
 
     this.otherAgents = [];
+  }
+
+  updateTargetPos(target)
+  {
+    this.target = Matter.Vector.clone(target);
+    this.Behavior = 2;
   }
 
   Seek(target)
   {
     let desire = Matter.Vector.sub(target, this.Agent.position);
+    if (Matter.Vector.magnitude(desire) < 5)
+    {
+      this.Behavior = 3;
+    }
+    desire = Matter.Vector.normalise(desire);
     let desiredVelocity = Matter.Vector.mult(desire, this.Agent.MaxSpeed);
 
-    desiredVelocity = Matter.Vector.normalise(desiredVelocity);
+    // desiredVelocity = Matter.Vector.div(desiredVelocity, this.Agent.MaxForce);
 
     return Matter.Vector.sub(desiredVelocity, this.Agent.Direction);
   }
 
   Flee(target)
   {
-    let desire = this.Agent.position.add(target);
-    let desiredVelocity = desire.mult(this.Agent.MaxSpeed);
+    let desire = Matter.Vector.sub(this.Agent.position, target);
+    desire = Matter.Vector.normalise(desire);
+    let desiredVelocity =  Matter.Vector.mult(desire, this.Agent.MaxSpeed);
 
-    desiredVelocity.normalize();
+    // desiredVelocity = Matter.Vector.div(desiredVelocity, this.Agent.MaxForce);
 
-    return desiredVelocity.add(this.Agent.Direction);
+    return Matter.Vector.sub(desiredVelocity, this.Agent.Direction);
   }
 
   Wander()
@@ -62,7 +75,7 @@ class SteeringBehaviors
 
   Separation()
   {
-    let desiredSeparation = .75 * 2;
+    let desiredSeparation = this.Agent.Mass * 2;
     let sum =  Matter.Vector.create(0,0);
     let count = 0;
 
@@ -116,12 +129,12 @@ class SteeringBehaviors
     //Seeking Behavior
     else if (this.Behavior === 1)
     {
-      return this.SteeringForce = this.Seek(this.target.copy());
+      return this.SteeringForce = this.Seek(Matter.Vector.clone(this.target));
     }
     //Fleeing Behavior
     else if (this.Behavior === 2)
     {
-      return this.SteeringForce = this.Flee(this.target.copy());
+      return this.SteeringForce = this.Flee(this.target);
     }
     //wandering behavior
     else if (this.Behavior === 3)

@@ -5,11 +5,11 @@ class MovingAgent extends Agent
         super(loc, m, c);
 
         //MaxSpeed
-        this.MaxSpeed = 20 * this.Mass;
-        this.body.density = this.Mass/2;
+        this.MaxSpeed = 1;
+        // this.body.density = this.Mass;
 
         //MaxForce
-        this.MaxForce = 26;
+        this.MaxForce = 4;
 
         //Direction
         this.Direction =  Matter.Vector.create(0,0);

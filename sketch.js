@@ -6,16 +6,16 @@ let Engine = Matter.Engine,
 
 var engine = Engine.create();
 var world = engine.world;
-
+let numOfAgents = 200;
 function setup()
 {
 	createCanvas(windowWidth, windowHeight);
-	for (var i = 0; i < 500; i++)
+	for (var i = 0; i < numOfAgents; i++)
 	{
-		//if (i < 100 - 4)
+		//if (i < numOfAgents - 4)
 		{
-			agents.push(new MovingAgent(createVector(random(width), random(height)),
-			3, color(random(255), random(255), random(255)), createVector(random() * width, random() * height),
+			agents.push(new MovingAgent(createVector(random(width/4, width/2 + width/4), random(height/4, height/2 + height/4)),
+			5, color(random(255), random(0), random(255)), Matter.Vector.create(random() * width, random() * height),
 			agents[i-1]));
 		}
 		//else
@@ -34,13 +34,23 @@ function setup()
 	world.gravity.y = 0;
 }
 
+function mouseReleased()
+{
+	for (a of agents)
+	{
+		a.Steering.updateTargetPos(Matter.Vector.create(mouseX, mouseY));
+	}
+}
+
 function draw()
 {
 
 	Engine.update(engine);
-
-	for (a of agents)
+	// if (frameCount % 2 == 0)
 	{
-		a.run(16.666);
+		for (var i = 0; i < numOfAgents; i++)
+		{
+			agents[i].run(16.666);
+		}
 	}
 }
