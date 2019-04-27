@@ -6,19 +6,20 @@ var Engine = Matter.Engine,
 
 var engine = Engine.create();
 var world = engine.world;
-let numOfAgents = 200;
+let numOfAgents = 100;
 
 function setup()
 {
 	createCanvas(windowWidth, windowHeight);
+	engine.positionIterations = 60;
 
 	for (var i = 0; i < numOfAgents; i++)
 	{
 		createAgents(i);
 	}
-	let boundary = new Rectangle(0, 0, width, height);
+	let boundary = new Rectangle(width/2, height/2, width, height);
 	qt = new QuadTree(boundary, 4);
-	console.log(qt);
+	// console.log(qt);
 
 	world.gravity.y = 0;
 
@@ -29,8 +30,8 @@ function setup()
 function createAgents(i)
 {
 	let pos = Matter.Vector.create(random(width), random(height));
-	let c = color(random(255), random(0), random(255));
-	let size = 10;
+	let c = color(random(255), random(255), random(255));
+	let size = 5;
 	{
 		agents.push(new MovingAgent(pos, size, c,
 			Matter.Vector.create(random() * width, random() * height),
@@ -41,6 +42,7 @@ function createAgents(i)
 	{
 		a.Steering.addOtherAgents(agents);
 	}
+	// background(0);
 }
 
 function AddAgentsQuadTree(tree, a)
@@ -55,26 +57,36 @@ function mouseReleased()
 	{
 		//a.Steering.updateTargetPos(Matter.Vector.create(mouseX, mouseY));
 	}
+	// console.log(mouseX, mouseY);
 }
 
+var tree;
+let bool = false;
 function draw()
 {
 	background(0);
-
- 	let boundary = new Rectangle(0, 0, width, height);
-	let tree = new QuadTree(boundary, 4);
+ 	let boundary = new Rectangle(width/2, height/2, width, height);
+	tree = new QuadTree(boundary, 4);
 
 	for (let a of agents)
 	{
 			AddAgentsQuadTree(tree, a);
 			a.run(16.666);
 	}
-	console.log(tree);
-	tree.show();
-	noLoop();
+	// tree.show();
 
 
-	for (var i = 0; i < numOfAgents; i++)
+	for (let a of agents)
 	{
+		let range = new Rectangle(a.position.x, a.position.y, a.Mass, a.Mass)
+		let pts = tree.query(range);
+		for (let p of pts)
+		{
+				let other = p.userData;
+				if (a !== other && a.intersects(other))
+				{
+					a.bounce(other);
+				}
+		}
 	}
 }

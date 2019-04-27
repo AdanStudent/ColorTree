@@ -22,6 +22,18 @@ class MovingAgent extends Agent
         this.collided = [];
     }
 
+    intersects(other)
+    {
+      let d = dist(this.position.x, this.position.y,
+         other.position.x, other.position.y);
+      return (d < this.Mass + other.Mass);
+    }
+
+    bounce(other)
+    {
+
+    }
+
     run(dT)
     {
       // console.log(this.position);

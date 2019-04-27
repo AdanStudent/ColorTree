@@ -13,19 +13,19 @@ class Agent
 
       // this.highlight = false;
 
-      this.body = Bodies.circle(this.location.x, this.location.y, this.Mass * 2);
+      this.body = Bodies.circle(this.location.x, this.location.y, this.Mass);
       World.add(world, this.body);
     }
 
     show()
     {
-      if(!this.highlight)
+      // if(!this.highlight)
       {
         fill(this.Red, this.Green, this.Blue);
       }
-      else
+      // else
       {
-        fill(255);
+        // fill(255);
       }
       let pos = this.body.position;
       noStroke();

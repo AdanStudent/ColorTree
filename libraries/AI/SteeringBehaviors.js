@@ -139,7 +139,8 @@ class SteeringBehaviors
     //wandering behavior
     else if (this.Behavior === 3)
     {
-      return this.SteeringForce = Matter.Vector.add(this.Wander(), this.Separation());
+      return this.SteeringForce = this.Wander();
+      // return this.SteeringForce = Matter.Vector.add(this.Wander(), this.Separation());
     }
   }
 
