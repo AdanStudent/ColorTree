@@ -9,10 +9,16 @@ class SteeringBehaviors
     this.Acceleration;
     this.wanderTheta = 0.0;
     // this.Behavior = int(random(1, 4));
-    this.Behavior = 3;
+    this.Behavior = 4;
     this.change = random(0.30, 0.45);
 
     this.otherAgents = [];
+
+    this.points = [];
+    this.fillPoints();
+
+    this.currentNode = this.points.length - 1;
+    this.pathDirection = -1;
   }
 
   updateTargetPos(target)
@@ -24,10 +30,6 @@ class SteeringBehaviors
   Seek(target)
   {
     let desire = Matter.Vector.sub(target, this.Agent.position);
-    if (Matter.Vector.magnitude(desire) < 5)
-    {
-      this.Behavior = 3;
-    }
     desire = Matter.Vector.normalise(desire);
     let desiredVelocity = Matter.Vector.mult(desire, this.Agent.MaxSpeed);
 
@@ -75,7 +77,7 @@ class SteeringBehaviors
 
   Separation()
   {
-    let desiredSeparation = this.Agent.Mass * 2;
+    let desiredSeparation = this.Agent.Mass / 2;
     let sum =  Matter.Vector.create(0,0);
     let count = 0;
 
@@ -105,13 +107,64 @@ class SteeringBehaviors
     return force;
   }
 
+  fillPoints()
+  {
+     //get 10 points
+     for (var i = 0; i < 10; i++)
+     {
+       let vec = new Matter.Vector.create(0, 0);
+
+       //get 3 positions x, y, z
+       for (var j = 0; j < 3; j++)
+       {
+         let p = random(0, windowHeight);
+
+         if (j === 0) {
+           vec.x = p;
+         }
+         else if (j === 1) {
+           vec.y = p;
+         }
+       }
+       this.points.push(vec);
+     }
+
+     // console.log(this.points)
+   }
+
+   pathFollow()
+   {
+     let tar = new Matter.Vector.create();
+
+     if (this.points != null)
+     {
+       // console.log(this.points[this.currentNode]);
+       tar = Matter.Vector.clone(this.points[this.currentNode]);
+
+       if (this.dist(this.Agent.position, tar) < 15)
+       {
+           //this.currentNode--;
+           this.currentNode += this.pathDirection;
+
+         if (this.currentNode <= -1 || this.currentNode >= this.points.length)
+         {
+               //this.currentNode = 0;
+             this.pathDirection *= -1;
+             this.currentNode += this.pathDirection;
+
+         }
+       }
+     }
+
+     return this.Seek(tar);
+   }
+
   dist(vecA, vecB)
   {
-    let distX = Math.pow(vecB - vecA, 2);
-    let distY = Math.pow(vecB - vecA, 2);
+    let distX = Math.pow(vecB.x - vecA.x, 2);
+    let distY = Math.pow(vecB.x - vecA.x, 2);
 
     return Math.sqrt(distX + distY);
-
   }
 
   addOtherAgents(others)
@@ -141,6 +194,10 @@ class SteeringBehaviors
     {
       return this.SteeringForce = this.Wander();
       // return this.SteeringForce = Matter.Vector.add(this.Wander(), this.Separation());
+    }
+    else if(this.Behavior === 4)
+    {
+      return this.SteeringForce = this.pathFollow();
     }
   }
 

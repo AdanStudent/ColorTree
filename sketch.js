@@ -6,12 +6,13 @@ var Engine = Matter.Engine,
 
 var engine = Engine.create();
 var world = engine.world;
-let numOfAgents = 100;
+let numOfAgents = 10;
 
 function setup()
 {
 	createCanvas(windowWidth, windowHeight);
 	engine.positionIterations = 60;
+	frameRate(60);
 
 	for (var i = 0; i < numOfAgents; i++)
 	{
@@ -30,7 +31,7 @@ function setup()
 function createAgents(i)
 {
 	let pos = Matter.Vector.create(random(width), random(height));
-	let c = color(random(255), random(255), random(255));
+	let c = color(random(255), random(0), random(255));
 	let size = 5;
 	{
 		agents.push(new MovingAgent(pos, size, c,
@@ -42,7 +43,7 @@ function createAgents(i)
 	{
 		a.Steering.addOtherAgents(agents);
 	}
-	// background(0);
+	background(255);
 }
 
 function AddAgentsQuadTree(tree, a)
@@ -64,7 +65,7 @@ var tree;
 let bool = false;
 function draw()
 {
-	background(0);
+	// background(0);
  	let boundary = new Rectangle(width/2, height/2, width, height);
 	tree = new QuadTree(boundary, 4);
 
