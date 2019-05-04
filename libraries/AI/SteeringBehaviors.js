@@ -9,7 +9,7 @@ class SteeringBehaviors
     this.Acceleration;
     this.wanderTheta = 0.0;
     // this.Behavior = int(random(1, 4));
-    this.Behavior = 4;
+    this.Behavior = 3;
     this.change = random(0.30, 0.45);
 
     this.otherAgents = [];
@@ -19,12 +19,21 @@ class SteeringBehaviors
 
     this.currentNode = this.points.length - 1;
     this.pathDirection = -1;
+
+    this.isWandering = true;
   }
 
   updateTargetPos(target)
   {
-    this.target = Matter.Vector.clone(target);
-    this.Behavior = 2;
+    this.isWandering = !this.isWandering;
+    if (!this.isWandering)
+    {
+      this.Behavior = 4;
+    }
+    else
+    {
+      this.Behavior = 3;
+    }
   }
 
   Seek(target)
@@ -167,11 +176,6 @@ class SteeringBehaviors
     return Math.sqrt(distX + distY);
   }
 
-  addOtherAgents(others)
-  {
-    this.otherAgents = others;
-  }
-
   updateBehaviors()
   {
     //no Behavior running
@@ -192,8 +196,8 @@ class SteeringBehaviors
     //wandering behavior
     else if (this.Behavior === 3)
     {
-      return this.SteeringForce = this.Wander();
-      // return this.SteeringForce = Matter.Vector.add(this.Wander(), this.Separation());
+      // return this.SteeringForce = this.Wander();
+      return this.SteeringForce = Matter.Vector.add(this.Wander(), this.Separation());
     }
     else if(this.Behavior === 4)
     {
@@ -225,6 +229,7 @@ class SteeringBehaviors
     }
 
     this.SteeringForce = createVector(0, 0);
+    this.otherAgents = [];
 
   }
 
