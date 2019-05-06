@@ -14,7 +14,7 @@ function setup()
 	engine.positionIterations = 60;
 	world.gravity.y = 0;
 	frameRate(60);
-	world.gravity.x = .75;
+	world.gravity.x = 5;
 
 	for (var i = 0; i < numOfAgents; i++)
 	{
@@ -32,7 +32,8 @@ function setup()
 function createAgents(i)
 {
 	let pos = Matter.Vector.create(random(width), random(height));
-	let c = color(random(0), random(20, 150), random(255));
+	let c = color(random(255), 0, random(255));
+	// let c = color(255);
 	let size = 2;
 	{
 		agents.push(new MovingAgent(pos, size, c,
