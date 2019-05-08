@@ -118,16 +118,14 @@ class SteeringBehaviors
 
   fillPoints()
   {
-     //get 10 points
-     for (var i = 0; i < 10; i++)
-     {
-       let x = random(width);
-       let y = random(height);
+    for (var i = 0; i < 15; i++)
+    {
+      //should propbably check to make sure that I'm not getting the same
+      //random point from the globalPoints array
+      this.points.push(globalPoints[Math.floor(Math.random()*globalPoints.length)]);
+    }
 
-       let vec = new Matter.Vector.create(x, y);
-       this.points.push(vec);
-     }
-   }
+  }
 
    pathFollow()
    {
@@ -137,7 +135,7 @@ class SteeringBehaviors
      {
        tar = Matter.Vector.clone(this.points[this.currentNode]);
 
-       if (this.dist(this.Agent.position, tar) < 15)
+       if (this.dist(this.Agent.position, tar) < 75)
        {
            //this.currentNode--;
            this.currentNode += this.pathDirection;

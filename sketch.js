@@ -8,6 +8,20 @@ var engine = Engine.create();
 var world = engine.world;
 let numOfAgents = 200;
 
+var globalPoints = [];
+
+function fillGlobalPoints()
+{
+	for (var i = 0; i < 50; i++)
+	{
+		let x = random(width);
+		let y = random(height);
+
+		let vec = new Matter.Vector.create(x, y);
+		this.globalPoints.push(vec);
+	}
+}
+
 let gui;
 function setup()
 {
@@ -20,6 +34,7 @@ function setup()
 	world.gravity.y = 0;
 	world.gravity.x = 0;
 
+	fillGlobalPoints();
 	for (var i = 0; i < numOfAgents; i++)
 	{
 		createAgents(i);
@@ -209,10 +224,10 @@ function draw()
 				let other = p.userData;
 				a.Steering.otherAgents.push(other);
 
-				if (a !== other && a.intersects(other))
-				{
-					a.bounce(other);
-				}
+				// if (a !== other && a.intersects(other))
+				// {
+				// 	a.bounce(other);
+				// }
 		}
 	}
 
