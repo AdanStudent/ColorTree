@@ -6,15 +6,19 @@ var Engine = Matter.Engine,
 
 var engine = Engine.create();
 var world = engine.world;
-let numOfAgents = 1000;
+let numOfAgents = 200;
 
+let gui;
 function setup()
 {
 	createCanvas(windowWidth, windowHeight);
+	background(0);
+
 	engine.positionIterations = 60;
-	world.gravity.y = 0;
 	frameRate(60);
-	world.gravity.x = 5;
+
+	world.gravity.y = 0;
+	world.gravity.x = 0;
 
 	for (var i = 0; i < numOfAgents; i++)
 	{
@@ -22,30 +26,150 @@ function setup()
 	}
 	let boundary = new Rectangle(width/2, height/2, width, height);
 	qt = new QuadTree(boundary, 4);
-	// console.log(qt);
-
-
 	Engine.run(engine);
-	// Engine.update(engine);
+
+
+	initGUI();
+}
+
+let colors = [ 255, 20, 255 ];
+function initGUI()
+{
+	gui = new dat.GUI();
+	let visual = gui.addFolder('Visuals');
+	let behavior = gui.addFolder('Behavior');
+	let text =
+	{
+		'Redraw' : false,
+		'Color': [ 255, 20, 255 ],
+		'Random Color': true,
+		'Size': 2,
+		'X-Gravity': 0,
+		'Y-Gravity': 0,
+		'Steering_Behaviors': 0
+
+	};
+
+	visual.addColor(text, 'Color').onChange(function(val)
+	{
+		colors = val;
+		updateAgentsColor();
+	});
+
+	visual.add(text, 'Random Color').onChange(function(val)
+	{
+		isRandom = val;
+	});
+
+	visual.add(text, 'Size', 2, 10).onChange(function(val)
+	{
+		agentsSize = val;
+		updateAgentsSize();
+	});
+
+	visual.add(text, 'Redraw').onChange(function(val)
+	{
+		bool = val;
+	});
+
+
+	behavior.add(text, 'X-Gravity', -5, 5).onChange(function(val)
+	{
+		world.gravity.x = val;
+	});
+
+	behavior.add(text, 'Y-Gravity', -5, 5).onChange(function(val)
+	{
+		world.gravity.y = val;
+	});
+
+	behavior.add(text, 'Steering_Behaviors', {'Wander': 0, 'Path Follow': 1}).onChange(function(val)
+	{
+		switch (val)
+		{
+			case '0':
+				agentsBehavior = 3;
+			break;
+
+			case '1':
+				agentsBehavior = 4;
+			break;
+		}
+		updateAgentsBehavior();
+	});
+
+}
+
+let agentsSize = 2;
+function updateAgentsSize()
+{
+	for (let a of agents)
+	{
+		a.Mass = agentsSize;
+	}
+}
+
+let agentsBehavior = 3;
+function updateAgentsBehavior()
+{
+	for (let a of agents)
+	{
+		a.Steering.Behavior = agentsBehavior;
+	}
+}
+
+let isRandom = true;
+function updateAgentsColor()
+{
+	for (let agent of agents)
+	{
+
+		if (agent.Red !== colors[0])
+		{
+			if (isRandom)
+			{
+				agent.Red = random(colors[0] + 1);
+			}
+			else
+			{
+				agent.Red = colors[0] + 1;
+			}
+		}
+		if (agent.Green !== colors[1])
+		{
+			if (isRandom)
+			{
+				agent.Green = random(colors[1] + 1);
+			}
+			else
+			{
+				agent.Green = colors[1] + 1;
+			}
+		}
+		if (agent.Blue !== colors[2])
+		{
+			if (isRandom)
+			{
+				agent.Blue = random(colors[2] + 1);
+			}
+			else
+			{
+				agent.Blue = colors[2] + 1;
+			}
+		}
+	}
 }
 
 function createAgents(i)
 {
 	let pos = Matter.Vector.create(random(width), random(height));
-	let c = color(random(255), 0, random(255));
-	// let c = color(255);
+	let c = color(random(200), random(200), random(255));
 	let size = 2;
 	{
 		agents.push(new MovingAgent(pos, size, c,
 			Matter.Vector.create(random() * width, random() * height),
 		agents[i-1]));
 	}
-
-	// for (a of agents)
-	// {
-	// 	a.Steering.addOtherAgents(agents);
-	// }
-	background(0);
 }
 
 function AddAgentsQuadTree(tree, a)
@@ -54,20 +178,12 @@ function AddAgentsQuadTree(tree, a)
 	tree.insert(p);
 }
 
-function mouseReleased()
-{
-	for (a of agents)
-	{
-		a.Steering.updateTargetPos();
-	}
-	// console.log(mouseX, mouseY);
-}
 
 var tree;
 let bool = false;
 function draw()
 {
-	if (frameCount % 1800 == 0)
+	if (frameCount % 3000 == 0 || bool)
 	{
 		background(0);
 	}

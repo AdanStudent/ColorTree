@@ -188,7 +188,7 @@ class SteeringBehaviors
     }
     else if(this.Behavior === 4)
     {
-      return this.SteeringForce = this.pathFollow();
+      return this.SteeringForce = Matter.Vector.add(this.pathFollow(), this.Separation());
     }
   }
 

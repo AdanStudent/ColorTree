@@ -11,23 +11,14 @@ class Agent
       this.Green = green(c);
       this.Blue = blue(c);
 
-      // this.highlight = false;
-
       this.body = Bodies.circle(this.location.x, this.location.y, this.Mass);
       World.add(world, this.body);
     }
 
     show()
     {
-      // if(!this.highlight)
-      {
-        fill(this.Red, this.Green, this.Blue);
-      }
-      // else
-      {
-        // fill(255);
-      }
       let pos = this.body.position;
+      fill(this.Red, this.Green, this.Blue);
       noStroke();
       ellipseMode(CENTER);
       ellipse(pos.x, pos.y, this.Mass);
